@@ -187,3 +187,22 @@ nsim_nscs_version <- function(brand='JBLH'){
 
 }
 
+
+#' 获取最新版本的聚类数据
+#'
+#' @param brand 品牌
+#'
+#' @return 返回值
+#' @export
+#'
+#' @examples
+#' nsim_nscs_current();
+nsim_nscs_current <- function(brand ='JBLH'){
+   conn <- conn_nsim()
+   var_verstion <- tsda::nsim_version_getCurrentVersion(brand,'nscs');
+   sql <- paste("select  A,B,C,D,E,F,G,H,I from nscs_version
+where FVersionTxt ='",var_version,"' and FBrand='",brand,"'",sep="")
+   res <-sql_select(conn,sql);
+   return(res);
+}
+
