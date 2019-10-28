@@ -199,7 +199,7 @@ nsim_nscs_version <- function(brand='JBLH'){
 #' nsim_nscs_current();
 nsim_nscs_current <- function(brand ='JBLH'){
    conn <- conn_nsim()
-   var_verstion <- tsda::nsim_version_getCurrentVersion(brand,'nscs');
+   var_version <- tsda::nsim_version_getCurrentVersion(brand,'nscs');
    sql <- paste("select  A,B,C,D,E,F,G,H,I from nscs_version
 where FVersionTxt ='",var_version,"' and FBrand='",brand,"'",sep="")
    res <-sql_select(conn,sql);
