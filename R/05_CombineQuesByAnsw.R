@@ -120,6 +120,7 @@ where fbrand ='",brand,"' and FStandard = 0 and FVersionTxt='",var_version,"'",s
 #' @import nsdictpkg
 #' @import nsclpkg
 #' @import nsblpkg
+#' @import dplyr
 #' @export
 #'
 #' @examples
