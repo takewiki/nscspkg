@@ -51,7 +51,7 @@ inner join nsim_version d
 on c.FVersionTxt = d.FVersionTxt
 and c.FBrand = d.FBrand
 where a.FBrand='",brand,"' and b.FCurrentVersion =1 and b.FType='nscs'
-and a.FCategory <>'未分类'
+and a.FCategory = '未分类'
 and d.FCurrentVersion =1 and d.FType='nscl'
 order by a.FCategory
 ")
