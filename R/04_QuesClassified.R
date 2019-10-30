@@ -153,6 +153,29 @@ order by  FQuestionId
   return(res)
 }
 
+
+
+#' 获取意图模块
+#'
+#' @param brand 品牌
+#'
+#' @return 返回值
+#' @export
+#'
+#' @examples
+#' ques_category_list_current()
+ques_category_list_current <- function(brand ='JBLH'){
+  conn <- conn_nsim();
+  sql <- paste("select distinct  a.FCategory  from ques_category_version a
+inner join nsim_version b
+on a.FVersionTxt = b.FVersionTxt
+and a.FBrand = b.FBrand
+where a.FBrand='",brand,"' and b.FCurrentVersion =1 and b.FType='nscs'
+",sep="")
+  res <-sql_select(conn,sql);
+  return(res)
+}
+
 #6.更新答案分类，保存多个版本 update------
 #' 答案分类根据问题分类进行处理
 #'
@@ -208,4 +231,6 @@ order by  FAnswerId
   res <- sql_select(conn,sql)
   return(res)
 }
+
+
 
