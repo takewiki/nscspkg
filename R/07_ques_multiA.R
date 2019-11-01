@@ -76,3 +76,38 @@ where FBrand ='",brand,"') and Fbrand ='",brand,"'")
   res <-split(res,as.character(res$FQuestionId))
   return(res);
 }
+
+#' 增加辅助无效功能
+#'
+#' @param data 数据
+#'
+#' @return 返回值
+#' @export
+#'
+#' @examples
+#' ques_invalidOptions();
+ques_invalidOptions <- function(data){
+
+  FQuestionId <- rep(unique(data$FQuestionId),2);
+  FQuestion <-rep(unique(data$FQuestion) ,2);
+  FAnswerId <- c(-1L,-2L);
+  FAnswer <- c('无效问题','无效答案');
+  data_invalid <- data.frame(FQuestionId,FQuestion,FAnswerId,FAnswer,stringsAsFactors = F);
+  res <-rbind(data,data_invalid);
+  return(res)
+}
+
+
+#' 问题添加辅助处理项
+#'
+#' @param data 数据
+#'
+#' @return 返回值
+#' @export
+#'
+#' @examples
+#' ques_addOptions();
+ques_addOptions <- function(data){
+  res <- lapply(data, ques_invalidOptions);
+  return(res)
+}
