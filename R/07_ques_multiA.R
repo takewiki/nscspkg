@@ -76,6 +76,29 @@ where FBrand ='",brand,"') and Fbrand ='",brand,"'")
   res <-split(res,as.character(res$FQuestionId))
   return(res);
 }
+#查看设置标准答的处理进度
+#' 查看问题的处理进度
+#'
+#' @param brand 品牌
+#'
+#' @return 返回值
+#' @export
+#'
+#' @examples
+#' ques_standard_shedule();
+ques_standard_shedule <- function(brand='JBLH'){
+  conn <-conn_nsim();
+  sql <-sql_paste("select FType,FCount from vw_ques_standard_schedule
+where FBrand ='",brand,"'")
+  res <- sql_select(conn,sql);
+  #names(res) <-c('类型','数量')
+  FF <- res[res$FType == '已处理','FCount'];
+  FU <- res[res$FType == '待处理','FCount'];
+  FP <-round(FF/(FF+FU)*100,2);
+  res2 <-data.frame(FF,FU,FP,stringsAsFactors = F);
+  names(res2) <-c('已处理','待处理','整体进度%')
+  return(res2);
+}
 
 #' 增加辅助无效功能
 #'
