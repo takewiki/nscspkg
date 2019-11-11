@@ -16,6 +16,38 @@ nsim_find_standardQues <- function(data){
 }
 
 
+#' find the answer
+#'
+#' @param data data
+#' @param dict dict
+#'
+#' @return return
+#' @export
+#'
+#' @examples
+#' nsim_find_standardAnsw()
+nsim_find_standardAnsw <- function(data,dict)
+{
+   ncount <- nrow(data);
+   input <- unique(data$FQues_std);
+   data_manual <- getAnswerByQuestion_dict(input,dict);
+   if( is.na(data_manual)){
+      data$FStandard <- rep(0L,ncount);
+      data[1,'FStandard'] <-1L;
+
+   }else{
+      data<- data[1,]
+      data[1,'FAnsw_std'] <- data_manual
+      data[1,'FStandard'] <-1L
+
+
+
+   }
+   return(data)
+
+}
+
+
 #' 处理名称
 #'
 #' @param data 数据
@@ -111,22 +143,21 @@ where fbrand ='",brand,"' and FStandard = 0 and FVersionTxt='",var_version,"'",s
 
 }
 
-#针对问题与答案进行处理
-#' 问题聚类的函数
+
+
+
+
+#' 处理数据，分步处理
 #'
 #' @param brand 品牌
 #'
 #' @return 返回值
-#' @import nsdictpkg
-#' @import nsclpkg
-#' @import nsblpkg
-#' @import dplyr
 #' @export
 #'
 #' @examples
-#' nsim_nscs_version();
-nsim_nscs_version <- function(brand='JBLH'){
-  #获取版本号
+#' nsim_nscs_version_step1();
+nsim_nscs_version_step1 <- function(brand='JBLH'){
+   #获取版本号
    var_version <- tsda::nsim_version_getNextVersion(brand,'nscs');
    print('1')
    #1.更新问题分类
@@ -138,7 +169,7 @@ nsim_nscs_version <- function(brand='JBLH'){
    #3.根据答案聚合问题
    ques_combine_ByAnsw(brand,var_version);
    print('4')
-     # 获取标题问题
+   # 获取标题问题
    data_standard <-ques_combine_ByAnsw_query_standard(brand,var_version);
    print('5')
    names(data_standard) <-c('FQues_std','FAnsw_std','FId');
@@ -159,9 +190,42 @@ nsim_nscs_version <- function(brand='JBLH'){
    res <- res[order(res$FQues_std),];
    #然后处理答答案第一个
    print('9')
-   col_names <-names(res);
+   #col_names <-names(res);
+   print('9.1')
+   #插入答案功能，如果存在人工指定的答案，则取人工，另则取第一个；
+   return(res)
+}
+
+#针对问题与答案进行处理
+#' 问题聚类的函数
+#'
+#' @param brand 品牌
+#'
+#' @return 返回值
+#' @import nsdictpkg
+#' @import nsclpkg
+#' @import nsblpkg
+#' @import dplyr
+#' @export
+#'
+#' @examples
+#' nsim_nscs_version();
+nsim_nscs_version <- function(brand='JBLH'){
+   #获取版本号
+   var_version <- tsda::nsim_version_getNextVersion(brand,'nscs');
+
+   res <-nsim_nscs_version_step1(brand)
+   col_names <- names(res);
+   print('step1-9')
    res <-split(res,res$FQues_std);
-   res <- lapply(res, nsim_find_standardQues);
+   print('9.2')
+   dict <- getStandardAsnwer_Manually(brand);
+   print('9.3')
+   #完善查看标准答案的功能--
+   res <- lapply(res, nsim_find_standardAnsw,dict=dict);
+   print('9.4')
+   View(res);
+   print(str(res));
    res <- do.call('rbind',res);
    res <- res[res$FStandard ==1L,col_names]
    print('10')
