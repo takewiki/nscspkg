@@ -154,6 +154,29 @@ order by  FQuestionId
 }
 
 
+#' 按版本查询问题分类
+#'
+#' @param brand 品牌
+#' @param var_version nscs版本
+#'
+#' @return 返回值
+#' @export
+#'
+#' @examples
+#' ques_category_query_version();
+ques_category_query_version <- function(brand='JBLH',var_version){
+
+  conn <- conn_nsim();
+  # var_version <-nsim_version_getCurrentVersion(brand,'nscs');
+  sql <- paste("select FQuestionId,FCategory from ques_category_version
+where fbrand ='",brand,"' and fversiontxt ='",var_version,"'
+order by  FQuestionId
+",sep="")
+  res <- sql_select(conn,sql)
+  return(res)
+}
+
+
 
 #' 获取意图模块
 #'
@@ -190,7 +213,9 @@ answ_category_by_ques_category_via_qalist <-function(brand='JBLH',var_version='V
   # var_version <- nsim_version_getCurrentVersion(brand,'nsdict');
   qalist <-nsim_qalist_fullTxt_current(brand);
   qalist_id <-unique(qalist[,c('FQuestionId','FAnswerId')]);
-  ques_category <-ques_category_query_current(brand);
+  #ques_category <-ques_category_query_current(brand);
+  #fixed the bug with  version
+  ques_category <-ques_category_query_version(brand,var_version);
   res <- merge(ques_category,qalist_id);
   res <-res[,c('FAnswerId','FCategory')];
   res <- unique(res);
